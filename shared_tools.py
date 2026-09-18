@@ -8,6 +8,50 @@ exposing it (MCP protocol vs. direct LangChain tools).
 """
 from app.db import run_query
 from app.config import SNOWFLAKE_TABLE
+import os
+
+_VECTOR_STORE_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "vector_store", "chroma_db"
+)
+_vector_store_cache = None
+
+
+def semantic_search_tenders(query: str, k: int = 5) -> list[dict]:
+    """
+    Semantically search tender titles for ones conceptually related to the
+    query, even if they don't share exact keywords - e.g. "office supplies"
+    can match "Kancelárske potreby" based on meaning rather than exact text.
+
+    Note: searches a sample of the dataset (see vector_store/build_index.py),
+    not the full 514k rows.
+
+    Args:
+        query: Natural-language description of what to search for.
+        k: Number of results to return (default 5, max 20).
+    """
+    global _vector_store_cache
+    k = min(max(k, 1), 20)
+
+    if _vector_store_cache is None:
+        from langchain_google_genai import GoogleGenerativeAIEmbeddings
+        from langchain_chroma import Chroma
+
+        if not os.path.exists(_VECTOR_STORE_DIR):
+            return [{
+                "error": "Vector store not built yet. Run vector_store/build_index.py first."
+            }]
+
+        embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
+        _vector_store_cache = Chroma(
+            persist_directory=_VECTOR_STORE_DIR,
+            embedding_function=embeddings,
+            collection_name="tender_titles",
+        )
+    results = _vector_store_cache.similarity_search(query, k=k)
+    return [
+        {"tender_title": doc.page_content, "contract_id": doc.metadata.get("contract_id")}
+        for doc in results
+    ]
 
 
 def search_contracts(buyer_name: str = None, limit: int = 20) -> list[dict]:

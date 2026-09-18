@@ -30,8 +30,9 @@ load_dotenv()
 search_contracts = tool(shared_tools.search_contracts)
 get_top_buyers = tool(shared_tools.get_top_buyers)
 get_dataset_summary = tool(shared_tools.get_dataset_summary)
+semantic_search_tenders = tool(shared_tools.semantic_search_tenders)
 
-tools = [search_contracts, get_top_buyers, get_dataset_summary]
+tools = [search_contracts, get_top_buyers, get_dataset_summary, semantic_search_tenders]
 
 
 def main():

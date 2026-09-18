@@ -12,6 +12,6 @@ mcp = FastMCP("Procurement Data Server")
 mcp.tool()(shared_tools.search_contracts)
 mcp.tool()(shared_tools.get_top_buyers)
 mcp.tool()(shared_tools.get_dataset_summary)
-
+mcp.tool()(shared_tools.semantic_search_tenders)
 if __name__ == "__main__":
     mcp.run()
