@@ -106,4 +106,4 @@ Dockerfile
 - The agent doesn't actually connect to the MCP server over the MCP protocol - `langchain-mcp-adapters` had a dependency conflict with FastMCP's bundled `mcp` package when I tried it, so the agent just imports the shared functions directly as LangChain tools instead. The MCP server itself still works fine on its own for any MCP-compatible client.
 - The semantic search index only covers 100 tender titles, not the full ~514k rows. Embedding all of them would take a while and run into free-tier API rate limits, so this is a representative sample for demo purposes. A real version would use a proper batch embedding pipeline over the whole dataset.
 - The API only reads data, so it doesn't run into the bind-parameter limits that came up on the loading side in the ETL repo - that's a write-side problem specific to inserting large batches into a wide table.atural-language questions
-- **Phase 4**: Docker + basic CI/CD
+
