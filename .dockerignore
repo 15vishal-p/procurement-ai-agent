@@ -1,0 +1,11 @@
+.env
+.env.example
+venv/
+__pycache__/
+*.pyc
+.git/
+.github/
+tests/
+mcp_server/
+agent/
+README.md
